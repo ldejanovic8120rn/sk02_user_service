@@ -14,7 +14,7 @@ public class ManagerAttributes {
     private String hotelName;
     private Date employmentDate;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL, mappedBy = "managerAttributes")
     //@JoinColumn (name = "user_id")
     private User user;
 

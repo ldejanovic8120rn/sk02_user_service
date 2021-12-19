@@ -2,12 +2,13 @@ package com.sk02.sk02_user_service.service;
 
 import com.sk02.sk02_user_service.dto.user.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
     //TODO login
 
-    Page<UserDto> findAll();
+    Page<UserDto> findAll(Pageable pageable);
 
     UserDto createClient(UserClientCreateDto userClientCreateDto);
     UserDto createManager(UserManagerCreateDto userManagerCreateDto);
@@ -17,6 +18,6 @@ public interface UserService {
     UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto);
     UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto);
 
-    UserDto deleteUser(Long id);
+    void deleteUser(Long id);
 
 }

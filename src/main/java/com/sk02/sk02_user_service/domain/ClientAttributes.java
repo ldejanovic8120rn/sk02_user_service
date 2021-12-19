@@ -18,7 +18,7 @@ public class ClientAttributes {
     private String passportNumber;
     private int reservationNumber;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL, mappedBy = "clientAttributes")
     //@JoinColumn (name = "user_id")
     private User user;
 

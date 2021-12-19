@@ -27,10 +27,10 @@ public class User {
     private String phone;
     private Date birthday;
 
-    @OneToOne (cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToOne (cascade = CascadeType.ALL)
     private ClientAttributes clientAttributes;
 
-    @OneToOne (cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToOne (cascade = CascadeType.ALL)
     private ManagerAttributes managerAttributes;
 
 
