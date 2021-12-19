@@ -1,5 +1,6 @@
 package com.sk02.sk02_user_service.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
@@ -26,7 +27,7 @@ public class UserClientCreateDto {
     @NotEmpty
     private String phone;
 
-    @NotEmpty
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date birthday;
 
     @NotEmpty
