@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Sk02UserServiceApplication {
 
     public static void main(String[] args) {
+        //test
         SpringApplication.run(Sk02UserServiceApplication.class, args);
     }
 
