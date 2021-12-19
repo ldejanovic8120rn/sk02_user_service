@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(null);
         userMapper.updateClientUser(userClientUpdateDto, user);
 
         return userMapper.userToUserDto(userRepository.save(user));
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(null);
         userMapper.updateManagerUser(userManagerUpdateDto, user);
 
         return userMapper.userToUserDto(userRepository.save(user));

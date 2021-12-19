@@ -27,8 +27,7 @@ public class UserController {
     }
 
     @PostMapping ("/client")
-    public ResponseEntity<UserDto> createUserClient(@RequestBody UserClientCreateDto userClientCreateDto) {
-        System.out.println("UDJIIIIIIIII");
+    public ResponseEntity<UserDto> createUserClient(@RequestBody @Valid UserClientCreateDto userClientCreateDto) {
         return new ResponseEntity<>(userService.createClient(userClientCreateDto), HttpStatus.OK);
     }
 
