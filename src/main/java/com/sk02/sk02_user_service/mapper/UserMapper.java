@@ -3,9 +3,11 @@ package com.sk02.sk02_user_service.mapper;
 import com.sk02.sk02_user_service.domain.User;
 import com.sk02.sk02_user_service.domain.enums.Role;
 import com.sk02.sk02_user_service.dto.user.*;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class UserMapper {
 
     public UserDto userToUserDto(User user) {

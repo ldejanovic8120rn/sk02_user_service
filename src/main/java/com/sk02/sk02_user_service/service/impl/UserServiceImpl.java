@@ -12,13 +12,17 @@ import com.sk02.sk02_user_service.repository.UserRepository;
 import com.sk02.sk02_user_service.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
+@Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
-    private UserMapper userMapper;
-    private UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
     private ClientAttributesRepository clientAttributesRepository;
     private ManagerAttributesRepository managerAttributesRepository;
 
