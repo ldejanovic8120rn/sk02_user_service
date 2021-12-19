@@ -26,8 +26,9 @@ public class UserController {
         return new ResponseEntity<>(userService.findAll(PageRequest.of(0, 20)), HttpStatus.OK);
     }
 
-    @PostMapping ("/user/client")
-    public ResponseEntity<UserDto> createUserClient(@RequestBody @Valid UserClientCreateDto userClientCreateDto) {
+    @PostMapping ("/client")
+    public ResponseEntity<UserDto> createUserClient(@RequestBody UserClientCreateDto userClientCreateDto) {
+        System.out.println("UDJIIIIIIIII");
         return new ResponseEntity<>(userService.createClient(userClientCreateDto), HttpStatus.OK);
     }
 
