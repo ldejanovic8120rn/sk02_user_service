@@ -1,12 +1,14 @@
 package com.sk02.sk02_user_service.service;
 
+import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
+import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
-    //TODO login
+    TokenResponseDto login(TokenRequestDto tokenRequestDto);
 
     Page<UserDto> findAll(Pageable pageable);
 

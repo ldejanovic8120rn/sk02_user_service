@@ -4,13 +4,18 @@ import com.sk02.sk02_user_service.domain.ClientAttributes;
 import com.sk02.sk02_user_service.domain.ManagerAttributes;
 import com.sk02.sk02_user_service.domain.User;
 import com.sk02.sk02_user_service.domain.enums.Rank;
+import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
+import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
 import com.sk02.sk02_user_service.exception.NotFoundException;
 import com.sk02.sk02_user_service.mapper.UserMapper;
 import com.sk02.sk02_user_service.repository.ClientAttributesRepository;
 import com.sk02.sk02_user_service.repository.ManagerAttributesRepository;
 import com.sk02.sk02_user_service.repository.UserRepository;
+import com.sk02.sk02_user_service.security.service.TokenService;
 import com.sk02.sk02_user_service.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,18 +27,30 @@ import java.util.Date;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private static final String notFoundMessage = "User with given ID not found!";
+    private static final String notFoundMessageId = "User with given ID not found!";
+    private static final String notFoundMessageEmailAndPassword = "User with given email and password not found!";
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private ClientAttributesRepository clientAttributesRepository;
-    private ManagerAttributesRepository managerAttributesRepository;
+    private final TokenService tokenService;
+    //private ClientAttributesRepository clientAttributesRepository;
+    //private ManagerAttributesRepository managerAttributesRepository;
 
-    public UserServiceImpl(UserMapper userMapper, UserRepository userRepository, ClientAttributesRepository clientAttributesRepository, ManagerAttributesRepository managerAttributesRepository) {
+    public UserServiceImpl(UserMapper userMapper, UserRepository userRepository, TokenService tokenService) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
-        this.clientAttributesRepository = clientAttributesRepository;
-        this.managerAttributesRepository = managerAttributesRepository;
+        this.tokenService = tokenService;
+    }
+
+    @Override
+    public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
+        User user = userRepository.findUserByEmailAndPassword(tokenRequestDto.getEmail(), tokenRequestDto.getPassword()).orElseThrow(() -> new NotFoundException(notFoundMessageEmailAndPassword));
+
+        Claims claims = Jwts.claims();
+        claims.put("id", user.getId());
+        claims.put("role", user.getRole().name());
+
+        return new TokenResponseDto(tokenService.generate(claims));
     }
 
     @Override
@@ -68,12 +85,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User with given username - \"" + username + "\" not found!"));
+        return userRepository.findUserByUsername(username).orElseThrow(() -> new NotFoundException("User with given username - \"" + username + "\" not found!"));
     }
 
     @Override
     public UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         userMapper.updateClientUser(userClientUpdateDto, user);
 
         return userMapper.userToUserDto(userRepository.save(user));
@@ -81,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         userMapper.updateManagerUser(userManagerUpdateDto, user);
 
         return userMapper.userToUserDto(userRepository.save(user));
@@ -89,14 +106,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         user.setEnabled(false);
         userRepository.save(user);
     }
 
     @Override
     public void activateUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         user.setEnabled(true);
         userRepository.save(user);
     }

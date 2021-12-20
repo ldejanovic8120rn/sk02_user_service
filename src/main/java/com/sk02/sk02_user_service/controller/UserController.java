@@ -1,6 +1,10 @@
 package com.sk02.sk02_user_service.controller;
 
+import com.sk02.sk02_user_service.domain.enums.Role;
+import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
+import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
+import com.sk02.sk02_user_service.security.CheckSecurity;
 import com.sk02.sk02_user_service.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,13 +24,20 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
+        return new ResponseEntity<>(userService.login(tokenRequestDto), HttpStatus.OK);
+    }
+
     @GetMapping
-    public ResponseEntity<Page<UserDto>> getAllUsers() {
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<Page<UserDto>> getAllUsers(@RequestHeader("Authorization") String authorization) {
         return new ResponseEntity<>(userService.findAll(PageRequest.of(0, 20)), HttpStatus.OK);
     }
 
     @GetMapping ("/{username}")
-    public ResponseEntity<UserDto> getUserByUsername(@PathVariable("username") String username) {
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<UserDto> getUserByUsername(@RequestHeader("Authorization") String authorization, @PathVariable("username") String username) {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
     }
 
@@ -35,8 +46,16 @@ public class UserController {
         return new ResponseEntity<>(userService.createClient(userClientCreateDto), HttpStatus.CREATED);
     }
 
+    @PutMapping ("/client")
+    public ResponseEntity<UserDto> updateUserClient(@RequestHeader("Authorization") String authorization, @RequestBody UserClientUpdateDto userClientUpdateDto) {
+
+        Long id = Long.valueOf(0);
+        return new ResponseEntity<>(userService.updateUserClient(id, userClientUpdateDto), HttpStatus.OK);
+    }
+
     @PutMapping ("client/{id}")
-    public ResponseEntity<UserDto> updateUserClient(@PathVariable("id") Long id, @RequestBody UserClientUpdateDto userClientUpdateDto) {
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<UserDto> updateUserClientByAdmin(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id, @RequestBody UserClientUpdateDto userClientUpdateDto) {
         return new ResponseEntity<>(userService.updateUserClient(id, userClientUpdateDto), HttpStatus.OK);
     }
 
@@ -46,18 +65,21 @@ public class UserController {
     }
 
     @PutMapping ("manager/{id}")
-    public ResponseEntity<UserDto> updateUserManager(@PathVariable("id") Long id, @RequestBody UserManagerUpdateDto userManagerUpdateDto) {
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<UserDto> updateUserManagerByAdmin(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id, @RequestBody UserManagerUpdateDto userManagerUpdateDto) {
         return new ResponseEntity<>(userService.updateUserManager(id, userManagerUpdateDto), HttpStatus.OK);
     }
 
     @PutMapping ("delete/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<HttpStatus> deleteUser(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping ("activate/{id}")
-    public ResponseEntity<HttpStatus> activateUser(@PathVariable("id") Long id) {
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<HttpStatus> activateUser(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
         userService.activateUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
