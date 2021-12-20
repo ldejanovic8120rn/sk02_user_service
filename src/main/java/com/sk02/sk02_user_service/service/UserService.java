@@ -13,11 +13,12 @@ public interface UserService {
     UserDto createClient(UserClientCreateDto userClientCreateDto);
     UserDto createManager(UserManagerCreateDto userManagerCreateDto);
 
-    UserDto getUser(String username);
+    UserDto getUserByUsername(String username);
 
     UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto);
     UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto);
 
     void deleteUser(Long id);
+    void activateUser(Long id);
 
 }

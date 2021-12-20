@@ -26,6 +26,8 @@ public class UserMapper {
         User user = new User();
 
         user.setRole(Role.CLIENT);
+        user.setEnabled(true);
+
         user.setFirstName(userClientCreateDto.getFirstName());
         user.setLastName(userClientCreateDto.getLastName());
         user.setUsername(userClientCreateDto.getUsername());
@@ -41,6 +43,8 @@ public class UserMapper {
         User user = new User();
 
         user.setRole(Role.MANAGER);
+        user.setEnabled(true);
+
         user.setFirstName(userManagerCreateDto.getFirstName());
         user.setLastName(userManagerCreateDto.getLastName());
         user.setUsername(userManagerCreateDto.getUsername());

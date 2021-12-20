@@ -19,6 +19,8 @@ public class User {
     @Enumerated (EnumType.STRING)
     private Role role;
 
+    private boolean enabled;
+
     private String firstName;
     private String lastName;
     private String username;
@@ -52,6 +54,14 @@ public class User {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setFirstName(String firstName) {

@@ -5,6 +5,7 @@ import com.sk02.sk02_user_service.domain.ManagerAttributes;
 import com.sk02.sk02_user_service.domain.User;
 import com.sk02.sk02_user_service.domain.enums.Rank;
 import com.sk02.sk02_user_service.dto.user.*;
+import com.sk02.sk02_user_service.exception.NotFoundException;
 import com.sk02.sk02_user_service.mapper.UserMapper;
 import com.sk02.sk02_user_service.repository.ClientAttributesRepository;
 import com.sk02.sk02_user_service.repository.ManagerAttributesRepository;
@@ -20,6 +21,8 @@ import java.util.Date;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
+
+    private static final String notFoundMessage = "User with given ID not found!";
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -64,13 +67,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(String username) {
-        return null;
+    public UserDto getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User with given username - \"" + username + "\" not found!"));
     }
 
     @Override
     public UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(null);
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
         userMapper.updateClientUser(userClientUpdateDto, user);
 
         return userMapper.userToUserDto(userRepository.save(user));
@@ -78,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(null);
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
         userMapper.updateManagerUser(userManagerUpdateDto, user);
 
         return userMapper.userToUserDto(userRepository.save(user));
@@ -86,7 +89,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
+        user.setEnabled(false);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void activateUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage));
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
 }
