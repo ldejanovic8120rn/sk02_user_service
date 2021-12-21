@@ -17,8 +17,8 @@ public interface UserService {
 
     UserDto getUserByUsername(String username);
 
-    UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto);
-    UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto);
+    UserDto updateUserClient(String authorization, UserClientUpdateDto userClientUpdateDto);
+    UserDto updateUserManager(String authorization, UserManagerUpdateDto userManagerUpdateDto);
 
     void deleteUser(Long id);
     void activateUser(Long id);

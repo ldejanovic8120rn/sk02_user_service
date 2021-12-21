@@ -1,6 +1,5 @@
 package com.sk02.sk02_user_service.controller;
 
-import com.sk02.sk02_user_service.domain.enums.Role;
 import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
 import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
@@ -46,17 +45,10 @@ public class UserController {
         return new ResponseEntity<>(userService.createClient(userClientCreateDto), HttpStatus.CREATED);
     }
 
-    @PutMapping ("/client")
+    @PutMapping ("client")
+    @CheckSecurity (roles = {"CLIENT"})
     public ResponseEntity<UserDto> updateUserClient(@RequestHeader("Authorization") String authorization, @RequestBody UserClientUpdateDto userClientUpdateDto) {
-
-        Long id = Long.valueOf(0);
-        return new ResponseEntity<>(userService.updateUserClient(id, userClientUpdateDto), HttpStatus.OK);
-    }
-
-    @PutMapping ("client/{id}")
-    @CheckSecurity (roles = {"ADMIN"})
-    public ResponseEntity<UserDto> updateUserClientByAdmin(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id, @RequestBody UserClientUpdateDto userClientUpdateDto) {
-        return new ResponseEntity<>(userService.updateUserClient(id, userClientUpdateDto), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUserClient(authorization, userClientUpdateDto), HttpStatus.OK);
     }
 
     @PostMapping ("/manager")
@@ -64,10 +56,10 @@ public class UserController {
         return new ResponseEntity<>(userService.createManager(userManagerCreateDto), HttpStatus.CREATED);
     }
 
-    @PutMapping ("manager/{id}")
-    @CheckSecurity (roles = {"ADMIN"})
-    public ResponseEntity<UserDto> updateUserManagerByAdmin(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id, @RequestBody UserManagerUpdateDto userManagerUpdateDto) {
-        return new ResponseEntity<>(userService.updateUserManager(id, userManagerUpdateDto), HttpStatus.OK);
+    @PutMapping ("manager")
+    @CheckSecurity (roles = {"MANAGER"})
+    public ResponseEntity<UserDto> updateUserManager(@RequestHeader("Authorization") String authorization, @RequestBody UserManagerUpdateDto userManagerUpdateDto) {
+        return new ResponseEntity<>(userService.updateUserManager(authorization, userManagerUpdateDto), HttpStatus.OK);
     }
 
     @PutMapping ("delete/{id}")

@@ -89,7 +89,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUserClient(Long id, UserClientUpdateDto userClientUpdateDto) {
+    public UserDto updateUserClient(String authorization, UserClientUpdateDto userClientUpdateDto) {
+        Claims claims = tokenService.parseToken(authorization.split(" ")[1]);
+        Long id = claims.get("id", Long.class);
+
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         userMapper.updateClientUser(userClientUpdateDto, user);
 
@@ -97,7 +100,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUserManager(Long id, UserManagerUpdateDto userManagerUpdateDto) {
+    public UserDto updateUserManager(String authorization, UserManagerUpdateDto userManagerUpdateDto) {
+        Claims claims = tokenService.parseToken(authorization.split(" ")[1]);
+        Long id = claims.get("id", Long.class);
+
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         userMapper.updateManagerUser(userManagerUpdateDto, user);
 
