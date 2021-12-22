@@ -3,14 +3,11 @@ package com.sk02.sk02_user_service.service.impl;
 import com.sk02.sk02_user_service.domain.ClientAttributes;
 import com.sk02.sk02_user_service.domain.ManagerAttributes;
 import com.sk02.sk02_user_service.domain.User;
-import com.sk02.sk02_user_service.domain.enums.Rank;
 import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
 import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
 import com.sk02.sk02_user_service.exception.NotFoundException;
 import com.sk02.sk02_user_service.mapper.UserMapper;
-import com.sk02.sk02_user_service.repository.ClientAttributesRepository;
-import com.sk02.sk02_user_service.repository.ManagerAttributesRepository;
 import com.sk02.sk02_user_service.repository.UserRepository;
 import com.sk02.sk02_user_service.security.service.TokenService;
 import com.sk02.sk02_user_service.service.UserService;
@@ -33,8 +30,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final TokenService tokenService;
-    //private ClientAttributesRepository clientAttributesRepository;
-    //private ManagerAttributesRepository managerAttributesRepository;
 
     public UserServiceImpl(UserMapper userMapper, UserRepository userRepository, TokenService tokenService) {
         this.userMapper = userMapper;
@@ -63,7 +58,6 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.userClientCreateDtoToUser(userClientCreateDto);
         ClientAttributes clientAttributes = new ClientAttributes();
 
-        clientAttributes.setRank(Rank.BRONZE);
         clientAttributes.setPassportNumber(userClientCreateDto.getPassportNumber());
         clientAttributes.setReservationNumber(0);
 

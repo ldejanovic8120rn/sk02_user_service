@@ -1,7 +1,5 @@
 package com.sk02.sk02_user_service.domain;
 
-import com.sk02.sk02_user_service.domain.enums.Rank;
-
 import javax.persistence.*;
 
 @Entity
@@ -12,14 +10,10 @@ public class ClientAttributes {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated (EnumType.STRING)
-    private Rank rank;
-
     private String passportNumber;
     private int reservationNumber;
 
     @OneToOne (cascade = CascadeType.ALL, mappedBy = "clientAttributes")
-    //@JoinColumn (name = "user_id")
     private User user;
 
 
@@ -29,14 +23,6 @@ public class ClientAttributes {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Rank getRank() {
-        return rank;
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
     }
 
     public String getPassportNumber() {
