@@ -3,10 +3,12 @@ package com.sk02.sk02_user_service.service.impl;
 import com.sk02.sk02_user_service.domain.ClientAttributes;
 import com.sk02.sk02_user_service.domain.ManagerAttributes;
 import com.sk02.sk02_user_service.domain.User;
+import com.sk02.sk02_user_service.dto.attributes.ManagerAttributesDto;
 import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
 import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
 import com.sk02.sk02_user_service.exception.NotFoundException;
+import com.sk02.sk02_user_service.mapper.ManagerAttributesMapper;
 import com.sk02.sk02_user_service.mapper.UserMapper;
 import com.sk02.sk02_user_service.repository.UserRepository;
 import com.sk02.sk02_user_service.security.service.TokenService;
@@ -28,11 +30,13 @@ public class UserServiceImpl implements UserService {
     private static final String notFoundMessageEmailAndPassword = "User with given email and password not found!";
 
     private final UserMapper userMapper;
+    private ManagerAttributesMapper managerAttributesMapper;
     private final UserRepository userRepository;
     private final TokenService tokenService;
 
-    public UserServiceImpl(UserMapper userMapper, UserRepository userRepository, TokenService tokenService) {
+    public UserServiceImpl(UserMapper userMapper, ManagerAttributesMapper managerAttributesMapper, UserRepository userRepository, TokenService tokenService) {
         this.userMapper = userMapper;
+        this.managerAttributesMapper = managerAttributesMapper;
         this.userRepository = userRepository;
         this.tokenService = tokenService;
     }
@@ -80,6 +84,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByUsername(String username) {
         return userRepository.findUserByUsername(username).orElseThrow(() -> new NotFoundException("User with given username - \"" + username + "\" not found!"));
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        return userMapper.userToUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId)));
+    }
+
+    @Override
+    public ManagerAttributesDto getManagerAttributesByManagerId(Long managerId) {
+        User manager = userRepository.findById(managerId).orElseThrow(() -> new NotFoundException(notFoundMessageId));
+        return managerAttributesMapper.managerAttributesToManagerAttributesDto(manager.getManagerAttributes());
     }
 
     @Override

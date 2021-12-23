@@ -1,5 +1,6 @@
 package com.sk02.sk02_user_service.controller;
 
+import com.sk02.sk02_user_service.dto.attributes.ManagerAttributesDto;
 import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
 import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
@@ -38,6 +39,11 @@ public class UserController {
     @CheckSecurity (roles = {"ADMIN"})
     public ResponseEntity<UserDto> getUserByUsername(@RequestHeader("Authorization") String authorization, @PathVariable("username") String username) {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
+    }
+
+    @GetMapping("/manager-attributes/{id}")
+    public ResponseEntity<ManagerAttributesDto> getManagerAttributesById(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id){
+        return new ResponseEntity<>(userService.getManagerAttributesByManagerId(id), HttpStatus.OK);
     }
 
     @PostMapping ("/client")
