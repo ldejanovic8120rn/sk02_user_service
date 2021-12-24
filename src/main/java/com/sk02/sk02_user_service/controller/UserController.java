@@ -41,17 +41,12 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
     }
 
-    @GetMapping("/manager-attributes/{id}")
-    public ResponseEntity<ManagerAttributesDto> getManagerAttributesById(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id){
-        return new ResponseEntity<>(userService.getManagerAttributesByManagerId(id), HttpStatus.OK);
-    }
-
     @PostMapping ("/client")
     public ResponseEntity<UserDto> createUserClient(@RequestBody @Valid UserClientCreateDto userClientCreateDto) {
         return new ResponseEntity<>(userService.createClient(userClientCreateDto), HttpStatus.CREATED);
     }
 
-    @PutMapping ("client")
+    @PutMapping ("/client")
     @CheckSecurity (roles = {"CLIENT"})
     public ResponseEntity<UserDto> updateUserClient(@RequestHeader("Authorization") String authorization, @RequestBody UserClientUpdateDto userClientUpdateDto) {
         return new ResponseEntity<>(userService.updateUserClient(authorization, userClientUpdateDto), HttpStatus.OK);
@@ -62,20 +57,20 @@ public class UserController {
         return new ResponseEntity<>(userService.createManager(userManagerCreateDto), HttpStatus.CREATED);
     }
 
-    @PutMapping ("manager")
+    @PutMapping ("/manager")
     @CheckSecurity (roles = {"MANAGER"})
     public ResponseEntity<UserDto> updateUserManager(@RequestHeader("Authorization") String authorization, @RequestBody UserManagerUpdateDto userManagerUpdateDto) {
         return new ResponseEntity<>(userService.updateUserManager(authorization, userManagerUpdateDto), HttpStatus.OK);
     }
 
-    @PutMapping ("delete/{id}")
+    @PutMapping ("/delete/{id}")
     @CheckSecurity (roles = {"ADMIN"})
     public ResponseEntity<HttpStatus> deleteUser(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping ("activate/{id}")
+    @PutMapping ("/activate/{id}")
     @CheckSecurity (roles = {"ADMIN"})
     public ResponseEntity<HttpStatus> activateUser(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
         userService.activateUser(id);

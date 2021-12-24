@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table (name = "manager_attributes")
+@Table (name = "manager_attributes", indexes = {@Index(columnList = "hotelName", unique = true)})
 public class ManagerAttributes {
 
     @Id
