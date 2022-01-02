@@ -54,10 +54,9 @@ public class RankServiceImpl implements RankService {
 
     @Override
     public RankDto findDiscount(Long id) {
-        System.out.println("Stigao zahtev");
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(userNotFound));
         Rank rank = rankRepository.findRankByNumberOfReservation(user.getClientAttributes().getReservationNumber()).orElseThrow(() -> new NotFoundException(discountNotFound));
-        System.out.println(rank.getName());
+
         return rankMapper.rankToRankDto(rank);
     }
 
