@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
         claims.put("role", user.getRole().name());
+        claims.put("username", user.getUsername());
 
         return new TokenResponseDto(tokenService.generate(claims));
     }
