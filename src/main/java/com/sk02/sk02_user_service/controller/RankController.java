@@ -42,10 +42,10 @@ public class RankController {
         return new ResponseEntity<>(rankService.updateRank(id, rankUpdateDto), HttpStatus.OK);
     }
 
-    @GetMapping("/discount")
+    @GetMapping("/discount/{id}")
     @CheckSecurity(roles = {"ADMIN"})
-    public ResponseEntity<RankDto> findDiscount(@RequestHeader("Authorization") String authorization, @RequestBody UserDto userDto) {
-        return new ResponseEntity<>(rankService.findDiscount(userDto), HttpStatus.OK);
+    public ResponseEntity<RankDto> findDiscount(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
+        return new ResponseEntity<>(rankService.findDiscount(id), HttpStatus.OK);
     }
 
     @DeleteMapping("delete/{id}")

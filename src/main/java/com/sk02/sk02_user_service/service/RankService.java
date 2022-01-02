@@ -14,7 +14,7 @@ public interface RankService {
     RankDto createRank(RankCreateDto rankCreateDto);
     RankDto updateRank(Long id, RankUpdateDto rankUpdateDto);
 
-    RankDto findDiscount(UserDto userDto);
+    RankDto findDiscount(Long id);
 
     void deleteRank(Long id);
 }
