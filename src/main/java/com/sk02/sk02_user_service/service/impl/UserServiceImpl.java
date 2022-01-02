@@ -84,7 +84,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUsername(String username) {
-        return userRepository.findUserByUsername(username).orElseThrow(() -> new NotFoundException("User with given username - \"" + username + "\" not found!"));
+        User user = userRepository.findUserByUsername(username).orElseThrow(() -> new NotFoundException("User with given username - \"" + username + "\" not found!"));
+        return userMapper.userToUserDto(user);
     }
 
     @Override

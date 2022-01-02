@@ -22,4 +22,11 @@ public class ClientAttributesController {
         clientAttributesService.updateClientReservations(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/cancel/{username}")
+    @CheckSecurity(roles = {"ADMIN"})
+    public ResponseEntity<HttpStatus> updateCancelNumber (@RequestHeader("Authorization") String authorization, @PathVariable("username") String username){
+        clientAttributesService.updateClientCancellation(username);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

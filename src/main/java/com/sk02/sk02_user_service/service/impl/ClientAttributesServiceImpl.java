@@ -1,6 +1,7 @@
 package com.sk02.sk02_user_service.service.impl;
 
 import com.sk02.sk02_user_service.domain.User;
+import com.sk02.sk02_user_service.dto.user.UserDto;
 import com.sk02.sk02_user_service.exception.NotFoundException;
 import com.sk02.sk02_user_service.repository.UserRepository;
 import com.sk02.sk02_user_service.service.ClientAttributesService;
@@ -23,6 +24,14 @@ public class ClientAttributesServiceImpl implements ClientAttributesService {
     public void updateClientReservations(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userNotFound));
         user.getClientAttributes().setReservationNumber(user.getClientAttributes().getReservationNumber() + 1);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateClientCancellation(String username) {
+        User user = userRepository.findUserByUsername(username).orElseThrow(() -> new NotFoundException(userNotFound));
+
+        user.getClientAttributes().setReservationNumber(user.getClientAttributes().getReservationNumber() - 1);
         userRepository.save(user);
     }
 }
