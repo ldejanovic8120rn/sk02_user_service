@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         claims.put("id", user.getId());
         claims.put("role", user.getRole().name());
         claims.put("username", user.getUsername());
+        claims.put("email", user.getEmail());
 
         return new TokenResponseDto(tokenService.generate(claims));
     }
