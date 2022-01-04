@@ -10,6 +10,7 @@ import com.sk02.sk02_user_service.dto.user.*;
 import com.sk02.sk02_user_service.exception.NotFoundException;
 import com.sk02.sk02_user_service.mapper.ManagerAttributesMapper;
 import com.sk02.sk02_user_service.mapper.UserMapper;
+import com.sk02.sk02_user_service.repository.ManagerAttributesRepository;
 import com.sk02.sk02_user_service.repository.UserRepository;
 import com.sk02.sk02_user_service.security.service.TokenService;
 import com.sk02.sk02_user_service.service.NotificationService;
@@ -28,6 +29,7 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
 
     private static final String notFoundMessageId = "User with given ID not found!";
+    private static final String notFoundManagerAttributes = "Manager attributes with given hotel name not found!";
     private static final String notFoundMessageEmailAndPassword = "User with given email and password not found!";
 
     private final UserMapper userMapper;
@@ -35,13 +37,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final NotificationService notificationService;
+    private ManagerAttributesRepository managerAttributesRepository;
 
-    public UserServiceImpl(UserMapper userMapper, ManagerAttributesMapper managerAttributesMapper, UserRepository userRepository, TokenService tokenService, NotificationService notificationService) {
+    public UserServiceImpl(UserMapper userMapper, ManagerAttributesMapper managerAttributesMapper, UserRepository userRepository, TokenService tokenService, NotificationService notificationService, ManagerAttributesRepository managerAttributesRepository) {
         this.userMapper = userMapper;
         this.managerAttributesMapper = managerAttributesMapper;
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.notificationService = notificationService;
+        this.managerAttributesRepository = managerAttributesRepository;
     }
 
     @Override
@@ -155,6 +159,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDto findManagerByHotelName(String hotelName) {
+        ManagerAttributes managerAttributes = managerAttributesRepository.findManagerAttributesByHotelName(hotelName).orElseThrow(() -> new NotFoundException(notFoundManagerAttributes));
+        return userMapper.userToUserDto(managerAttributes.getUser());
     }
 
 }

@@ -27,4 +27,5 @@ public interface UserService {
     void deleteUser(Long id);
     void activateUser(Long id);
 
+    UserDto findManagerByHotelName(String hotelName);
 }

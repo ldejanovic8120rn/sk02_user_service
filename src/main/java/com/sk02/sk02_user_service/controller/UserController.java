@@ -82,4 +82,10 @@ public class UserController {
         userService.activateUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/manager/{hotelName}")
+    @CheckSecurity (roles = {"ADMIN"})
+    public ResponseEntity<UserDto> findManagerByHotelName(@RequestHeader("Authorization") String authorization, @PathVariable("hotelName") String hotelName) {
+        return new ResponseEntity<>(userService.findManagerByHotelName(hotelName), HttpStatus.OK);
+    }
 }
