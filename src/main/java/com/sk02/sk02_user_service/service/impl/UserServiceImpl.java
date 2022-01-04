@@ -12,6 +12,7 @@ import com.sk02.sk02_user_service.mapper.ManagerAttributesMapper;
 import com.sk02.sk02_user_service.mapper.UserMapper;
 import com.sk02.sk02_user_service.repository.UserRepository;
 import com.sk02.sk02_user_service.security.service.TokenService;
+import com.sk02.sk02_user_service.service.NotificationService;
 import com.sk02.sk02_user_service.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -30,15 +31,17 @@ public class UserServiceImpl implements UserService {
     private static final String notFoundMessageEmailAndPassword = "User with given email and password not found!";
 
     private final UserMapper userMapper;
-    private ManagerAttributesMapper managerAttributesMapper;
+    private final ManagerAttributesMapper managerAttributesMapper;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final NotificationService notificationService;
 
-    public UserServiceImpl(UserMapper userMapper, ManagerAttributesMapper managerAttributesMapper, UserRepository userRepository, TokenService tokenService) {
+    public UserServiceImpl(UserMapper userMapper, ManagerAttributesMapper managerAttributesMapper, UserRepository userRepository, TokenService tokenService, NotificationService notificationService) {
         this.userMapper = userMapper;
         this.managerAttributesMapper = managerAttributesMapper;
         this.userRepository = userRepository;
         this.tokenService = tokenService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -62,25 +65,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createClient(UserClientCreateDto userClientCreateDto) {
         User user = userMapper.userClientCreateDtoToUser(userClientCreateDto);
+        user.setEnabled(false);
+
         ClientAttributes clientAttributes = new ClientAttributes();
 
         clientAttributes.setPassportNumber(userClientCreateDto.getPassportNumber());
         clientAttributes.setReservationNumber(0);
-
         user.setClientAttributes(clientAttributes);
-        return userMapper.userToUserDto(userRepository.save(user));
+
+        UserDto userDto = userMapper.userToUserDto(userRepository.save(user));
+        notificationService.registerNotification(userDto);
+
+        return userDto;
     }
 
     @Override
     public UserDto createManager(UserManagerCreateDto userManagerCreateDto) {
         User user = userMapper.userManagerCreateDtoToUser(userManagerCreateDto);
+        user.setEnabled(false);
+
         ManagerAttributes managerAttributes = new ManagerAttributes();
 
         managerAttributes.setHotelName(userManagerCreateDto.getHotelName());
         managerAttributes.setEmploymentDate(new Date());
-
         user.setManagerAttributes(managerAttributes);
-        return userMapper.userToUserDto(userRepository.save(user));
+
+        UserDto userDto = userMapper.userToUserDto(userRepository.save(user));
+        notificationService.registerNotification(userDto);
+
+        return userDto;
     }
 
     @Override
@@ -108,7 +121,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         userMapper.updateClientUser(userClientUpdateDto, user);
 
-        return userMapper.userToUserDto(userRepository.save(user));
+        UserDto userDto = userMapper.userToUserDto(userRepository.save(user));
+        if (userClientUpdateDto.getPassword() != null)
+            notificationService.resetPasswordNotification(userDto);
+
+        return userDto;
     }
 
     @Override
@@ -119,7 +136,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessageId));
         userMapper.updateManagerUser(userManagerUpdateDto, user);
 
-        return userMapper.userToUserDto(userRepository.save(user));
+        UserDto userDto = userMapper.userToUserDto(userRepository.save(user));
+        if (userManagerUpdateDto.getPassword() != null)
+            notificationService.resetPasswordNotification(userDto);
+
+        return userDto;
     }
 
     @Override

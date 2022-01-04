@@ -65,14 +65,20 @@ public class UserController {
 
     @PutMapping ("/delete/{id}")
     @CheckSecurity (roles = {"ADMIN"})
-    public ResponseEntity<HttpStatus> deleteUser(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteUserByAdmin(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping ("/activate/{id}")
+    @PutMapping ("/activate-admin/{id}")
     @CheckSecurity (roles = {"ADMIN"})
-    public ResponseEntity<HttpStatus> activateUser(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> activateUserByAdmin(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
+        userService.activateUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/activate/{id}")
+    public ResponseEntity<HttpStatus> activateUser(@PathVariable("id") Long id) {
         userService.activateUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
