@@ -7,6 +7,7 @@ import com.sk02.sk02_user_service.dto.rank.RankDto;
 import com.sk02.sk02_user_service.dto.rank.RankUpdateDto;
 import com.sk02.sk02_user_service.dto.user.UserDto;
 import com.sk02.sk02_user_service.exception.NotFoundException;
+import com.sk02.sk02_user_service.exception.RankException;
 import com.sk02.sk02_user_service.mapper.RankMapper;
 import com.sk02.sk02_user_service.repository.RankRepository;
 import com.sk02.sk02_user_service.repository.UserRepository;
@@ -55,7 +56,7 @@ public class RankServiceImpl implements RankService {
     @Override
     public RankDto findDiscount(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(userNotFound));
-        Rank rank = rankRepository.findRankByNumberOfReservation(user.getClientAttributes().getReservationNumber()).orElseThrow(() -> new NotFoundException(discountNotFound));
+        Rank rank = rankRepository.findRankByNumberOfReservation(user.getClientAttributes().getReservationNumber()).orElseThrow(() -> new RankException(discountNotFound));
 
         return rankMapper.rankToRankDto(rank);
     }

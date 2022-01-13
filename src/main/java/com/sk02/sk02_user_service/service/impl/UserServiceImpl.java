@@ -7,6 +7,7 @@ import com.sk02.sk02_user_service.dto.attributes.ManagerAttributesDto;
 import com.sk02.sk02_user_service.dto.token.TokenRequestDto;
 import com.sk02.sk02_user_service.dto.token.TokenResponseDto;
 import com.sk02.sk02_user_service.dto.user.*;
+import com.sk02.sk02_user_service.exception.NotEnabledException;
 import com.sk02.sk02_user_service.exception.NotFoundException;
 import com.sk02.sk02_user_service.mapper.ManagerAttributesMapper;
 import com.sk02.sk02_user_service.mapper.UserMapper;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private static final String notFoundMessageId = "User with given ID not found!";
     private static final String notFoundManagerAttributes = "Manager attributes with given hotel name not found!";
     private static final String notFoundMessageEmailAndPassword = "User with given email and password not found!";
+    private static final String userNotActivated = "User profile not activated!";
 
     private final UserMapper userMapper;
     private final ManagerAttributesMapper managerAttributesMapper;
@@ -51,6 +53,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
         User user = userRepository.findUserByEmailAndPassword(tokenRequestDto.getEmail(), tokenRequestDto.getPassword()).orElseThrow(() -> new NotFoundException(notFoundMessageEmailAndPassword));
+
+        if(!user.isEnabled()){
+            throw new NotEnabledException(userNotActivated);
+        }
 
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());

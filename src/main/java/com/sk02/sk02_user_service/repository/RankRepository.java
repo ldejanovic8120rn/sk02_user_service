@@ -11,8 +11,7 @@ import java.util.Optional;
 @Repository
 public interface RankRepository extends JpaRepository<Rank, Long> {
 
-    // SELECT * FROM ranks r WHERE r.limit >= :num_of_reservation order by r.limit asc limit 1
-    @Query(value = "SELECT * from ranks r where r.reservation_limit >= :num_of_reservation order by r.reservation_limit asc limit 1", nativeQuery = true)
+    @Query(value = "SELECT * from ranks r where r.reservation_limit <= :num_of_reservation order by r.reservation_limit desc limit 1", nativeQuery = true)
     Optional<Rank> findRankByNumberOfReservation(@Param("num_of_reservation") int numOfReservation);
 
 }
